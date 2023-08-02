@@ -1,0 +1,12 @@
+{
+  "go.useLanguageServer": true,
+  "go.languageServerExperimentalFeatures": {
+    "autoComplete": true,
+    "format": true,
+    "rename": true,
+    "signatureHelp": true,
+    "goToDefinition": true,
+    "hover": true,
+    "imports": true
+  }
+}
