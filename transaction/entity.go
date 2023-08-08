@@ -1,14 +1,18 @@
 package transaction
 
-import "time"
+import (
+	"golang/user"
+	"time"
+)
 
 type Transaction struct {
 	ID         int
 	CampaignID int
-	USerID     int
+	UserID     int
 	Amount     int
 	Status     string
 	Code       string
+	User 	   user.User
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
