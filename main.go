@@ -5,6 +5,7 @@ import (
 	"golang/campaign"
 	"golang/handler"
 	"golang/helper"
+	"golang/payment"
 	"golang/transaction"
 	"golang/user"
 	"log"
@@ -32,7 +33,8 @@ func main() {
 	campaignService := campaign.NewService(campaignRepository)
 	userService := user.NewService(userRepository)
 	authService := auth.NewService()
-	transactionService := transaction.NewService(transactionRepository, campaignRepository)
+	paymentService := payment.NewService()
+	transactionService := transaction.NewService(transactionRepository, campaignRepository, paymentService)
 
 	userHandler := handler.NewUserHandler(userService, authService)
 	campaignHandler := handler.NewCampaignHandler(campaignService)
@@ -55,6 +57,7 @@ func main() {
 
 	api.GET("/campaigns/:id/transactions", authMiddleware(authService, userService),transactionHandler.GetCampaignTransactions)
 	api.GET("/transactions", authMiddleware(authService, userService),transactionHandler.GetUserTransactions)
+	api.POST("/transactions", authMiddleware(authService, userService),transactionHandler.CreateTransaction)
 
 	router.Run()
 	
