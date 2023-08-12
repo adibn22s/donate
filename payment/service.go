@@ -12,6 +12,7 @@ type service struct {
 
 type Service interface {
 	GetPaymentURL(transaction Transaction, user user.User) (string, error)
+	
 }
 
 func NewService() *service {
@@ -45,3 +46,4 @@ func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string
 	}
 	return snapTokenResp.RedirectURL, nil
 }
+
