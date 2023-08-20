@@ -18,6 +18,7 @@ type Service interface {
 	GetTransactionsByUserID(userID int) ([]Transaction, error)
 	CreateTransaction(input CreateTransactionInput) (Transaction, error)
 	ProcessPayment(input TransactionNotificationInput) error
+	GetAllTransactions() ([]Transaction, error)
 }
 
 func NewService(repository Repository, campaignRepository campaign.Repository, paymentService payment.Service) *service {
@@ -92,12 +93,12 @@ func (s *service) ProcessPayment(input TransactionNotificationInput) error {
 	if err != nil {
 		return err
 	}
-	
+
 	if input.PaymentType == "credit_card" && input.TransactionStatus == "capture" && input.FraudStatus == "accept" {
 		transaction.Status = "paid"
 	} else if input.TransactionStatus == "settlement" {
 		transaction.Status = "paid"
-	} else if input.TransactionStatus == "deny" || input.TransactionStatus == "expired" || input.TransactionStatus == "cancel" {
+	} else if input.TransactionStatus == "deny" || input.TransactionStatus == "expire" || input.TransactionStatus == "cancel" {
 		transaction.Status = "cancelled"
 	}
 
@@ -105,7 +106,7 @@ func (s *service) ProcessPayment(input TransactionNotificationInput) error {
 	if err != nil {
 		return err
 	}
-	
+
 	campaign, err := s.campaignRepository.FindByID(updatedTransaction.CampaignID)
 	if err != nil {
 		return err
@@ -122,5 +123,12 @@ func (s *service) ProcessPayment(input TransactionNotificationInput) error {
 	}
 
 	return nil
+}
 
+func (s *service) GetAllTransactions() ([]Transaction, error){
+	transactions, err := s.repository.FindAll()
+	if err != nil {
+		return transactions, err
+	}
+	return transactions, nil
 }
